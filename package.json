@@ -1,0 +1,35 @@
+{
+  "name": "mlb-stats",
+  "version": "1.0.0",
+  "description": "Stats fetching and reducing using erikberg xmlstats api",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "npx babel src --watch --out-file build.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/odiazjs/mlb-stats.git"
+  },
+  "keywords": [
+    "mlb",
+    "stats",
+    "api"
+  ],
+  "author": "odiaz.dw@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/odiazjs/mlb-stats/issues"
+  },
+  "homepage": "https://github.com/odiazjs/mlb-stats#readme",
+  "devDependencies": {
+    "axios": "0.18.0",
+    "babel-cli": "6.26.0",
+    "babel-core": "6.26.0",
+    "babel-plugin-check-es2015-constants": "6.22.0",
+    "babel-plugin-transform-es2015-arrow-functions": "6.22.0",
+    "babel-plugin-transform-es2015-block-scoping": "6.26.0",
+    "babel-preset-es2015": "6.24.1"
+  },
+  "dependencies": {}
+}
