@@ -1,2 +1,2 @@
-const Axios = require( "axios" );
-console.log(Axios)
+const httpClient = require('./httpClient')
+console.log(httpClient)
