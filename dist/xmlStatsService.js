@@ -3,40 +3,33 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.XmlStatsService = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _httpClient = require('./httpClient');
+
+var _xmlStatsApiConfig = require('./xmlStatsApiConfig');
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var AxiosBase = exports.AxiosBase = function () {
-    function AxiosBase(xhrConfig) {
-        _classCallCheck(this, AxiosBase);
+var XmlStatsService = exports.XmlStatsService = function () {
+    function XmlStatsService() {
+        _classCallCheck(this, XmlStatsService);
 
-        this.xhrConfig = xhrConfig;
-        this.axiosConfig = this.config;
+        this.http = new _httpClient.HttpClient(_xmlStatsApiConfig.config);
     }
 
-    _createClass(AxiosBase, [{
-        key: 'setHeaders',
-        value: function setHeaders(token) {
-            return { 'Authorization': 'Bearer ' + token };
-        }
-    }, {
-        key: 'config',
-        get: function get() {
-            var _xhrConfig = this.xhrConfig,
-                baseURL = _xhrConfig.baseURL,
-                timeout = _xhrConfig.timeout,
-                apiToken = _xhrConfig.apiToken;
-
-            return {
-                baseURL: baseURL,
-                timeout: timeout,
-                headers: this.setHeaders(apiToken)
-            };
+    _createClass(XmlStatsService, [{
+        key: 'getEvents',
+        value: function getEvents(date) {
+            var eventsUrl = _xmlStatsApiConfig.endpoints.eventsUrl(date, 'mlb');
+            return this.http.get(eventsUrl);
         }
     }]);
 
-    return AxiosBase;
+    return XmlStatsService;
 }();
-//# sourceMappingURL=axiosBase.js.map
+
+exports.default = new XmlStatsService();
+//# sourceMappingURL=xmlStatsService.js.map

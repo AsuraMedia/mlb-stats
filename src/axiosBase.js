@@ -1,7 +1,8 @@
 export class AxiosBase {
  
     constructor ( xhrConfig ) {
-        this.xhrConfig = xhrConfig
+        this.xhrConfig      = xhrConfig
+        this.axiosConfig    = this.config
     }
 
     get config () {
@@ -9,11 +10,11 @@ export class AxiosBase {
         return {
             baseURL,
             timeout,
-            headers: this.headers( apiToken )
+            headers: this.setHeaders( apiToken )
         }
     }
 
-    set headers ( token ) {
+    setHeaders ( token ) {
         return { 'Authorization': `Bearer ${token}` }
     }
 

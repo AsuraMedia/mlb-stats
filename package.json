@@ -4,7 +4,7 @@
   "description": "Stats fetching and reducing using erikberg xmlstats api",
   "main": "src/index.js",
   "scripts": {
-    "build": "npx babel --source-maps --out-dir dist src --map --output dist --compile src",
+    "dev": "npx babel --watch --source-maps --out-dir dist src --map --output dist --compile src",
     "build:prod": "npx babel src --out-file build.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

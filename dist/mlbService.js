@@ -3,40 +3,36 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.MlbService = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _httpClient = require('./httpClient');
+
+var _mlbApiConfig = require('./mlbApiConfig');
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var AxiosBase = exports.AxiosBase = function () {
-    function AxiosBase(xhrConfig) {
-        _classCallCheck(this, AxiosBase);
+var MlbService = exports.MlbService = function () {
+    function MlbService() {
+        _classCallCheck(this, MlbService);
 
-        this.xhrConfig = xhrConfig;
-        this.axiosConfig = this.config;
+        this.http = new _httpClient.HttpClient(_mlbApiConfig.config);
     }
 
-    _createClass(AxiosBase, [{
-        key: 'setHeaders',
-        value: function setHeaders(token) {
-            return { 'Authorization': 'Bearer ' + token };
-        }
-    }, {
-        key: 'config',
-        get: function get() {
-            var _xhrConfig = this.xhrConfig,
-                baseURL = _xhrConfig.baseURL,
-                timeout = _xhrConfig.timeout,
-                apiToken = _xhrConfig.apiToken;
+    _createClass(MlbService, [{
+        key: 'getGameLogs',
+        value: function getGameLogs(_ref) {
+            var playerId = _ref.playerId,
+                season = _ref.season;
 
-            return {
-                baseURL: baseURL,
-                timeout: timeout,
-                headers: this.setHeaders(apiToken)
-            };
+            var gameLogsUrl = _mlbApiConfig.endpoints.gameLogsUrl(playerId, season);
+            return this.http.get(gameLogsUrl);
         }
     }]);
 
-    return AxiosBase;
+    return MlbService;
 }();
-//# sourceMappingURL=axiosBase.js.map
+
+exports.default = new MlbService();
+//# sourceMappingURL=mlbService.js.map

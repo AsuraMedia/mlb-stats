@@ -5,13 +5,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.HttpClient = undefined;
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _axios = require('axios');
 
 var _axios2 = _interopRequireDefault(_axios);
 
 var _axiosBase = require('./axiosBase');
-
-var _xmlStatsApiConfig = require('./xmlStatsApiConfig');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -24,18 +24,28 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var HttpClient = exports.HttpClient = function (_AxiosBase) {
     _inherits(HttpClient, _AxiosBase);
 
-    function HttpClient() {
+    function HttpClient(config) {
         _classCallCheck(this, HttpClient);
 
-        var _this = _possibleConstructorReturn(this, (HttpClient.__proto__ || Object.getPrototypeOf(HttpClient)).call(this, _xmlStatsApiConfig.config));
+        var _this = _possibleConstructorReturn(this, (HttpClient.__proto__ || Object.getPrototypeOf(HttpClient)).call(this, config));
 
         _this.instance = _axios2.default.create(_this.axiosConfig);
-
         return _this;
     }
 
+    _createClass(HttpClient, [{
+        key: 'get',
+        value: function get(url) {
+            var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+            return this.instance.get(url, params).catch(function (err) {
+                return err;
+            }).then(function (res) {
+                return res.data;
+            });
+        }
+    }]);
+
     return HttpClient;
 }(_axiosBase.AxiosBase);
-
-new HttpClient();
 //# sourceMappingURL=httpClient.js.map
