@@ -7,8 +7,8 @@ mlbService.getGameLogs( { playerId: 514888, season: 2017 } )
         console.log('GAME LOGS ------>', JSON.stringify(res))
     })
 
-const xmlStats = new XmlStatsService()
-xmlStats.getEvents( 20130531 )
+const xmlStatsService = new XmlStatsService()
+xmlStatsService.getEvents( 20130531 )
     .then((res) => {
         console.log('EVENTS -------> ', JSON.stringify(res))
     })
