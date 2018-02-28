@@ -14,6 +14,7 @@ export class MlbMapReducer {
             .getSchedule(date)
             .catch(err => err)
             .then(({ data }) => {
+                
                 const gamesArray = data.games.game
 
                 Rx.Observable.from(gamesArray).zip(
