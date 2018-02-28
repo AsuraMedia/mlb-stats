@@ -1,5 +1,6 @@
 import { MlbService } from './mlbService'
 import { XmlStatsService } from './xmlStatsService'
+import { MlbMapReducer } from './mlbMapReducer';
 
 // const xmlStatsService = new XmlStatsService()
 // xmlStatsService.getEvents(20170906)
@@ -13,12 +14,17 @@ import { XmlStatsService } from './xmlStatsService'
 //         console.log('BOX CORE -------> ', JSON.stringify(res))
 //     })
 
-const mlbService = new MlbService()
-const date = { year: '2017', month: '06', day: '06' }
-mlbService.getSchedule( date )
-    .then((res) => {
-        console.log('SCHEDULE ------>', JSON.stringify(res))
-    })
+// const mlbService = new MlbService()
+// const date = { year: '2017', month: '06', day: '06' }
+// mlbService.getSchedule( date )
+//     .then((res) => {
+//         console.log('SCHEDULE ------>', JSON.stringify(res))
+//     })
+
+const mapReducer = new MlbMapReducer()
+mapReducer
+    .mapSchedule()
+    .then( ( res ) => res )
 
 
 //mlb schedule
