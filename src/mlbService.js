@@ -12,6 +12,11 @@ export class MlbService {
         return this.http.get( gameLogsUrl )
     }
 
+    getSchedule ( date ) {
+        const scheduleUrl = endpoints.scheduleUrl( date )
+        return this.http.get( scheduleUrl )
+    }
+
 }
 
 export default new MlbService()

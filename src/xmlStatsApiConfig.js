@@ -7,5 +7,8 @@ export const config = {
 export const endpoints = {
     eventsUrl: (date, sport) => {
         return `${config.baseURL}/events.json?date=${date}&sport=${sport}`
+    },
+    boxCoreUrl: (eventId) => {
+        return `${config.baseURL}/mlb/boxscore/${eventId}.json`
     }
 }

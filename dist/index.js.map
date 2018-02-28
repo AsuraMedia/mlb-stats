@@ -1,1 +1,0 @@
-{"version":3,"sources":["../src/index.js"],"names":["httpClient","require","console","log"],"mappings":";;AAAA,IAAMA,aAAaC,QAAQ,cAAR,CAAnB;AACAC,QAAQC,GAAR,CAAYH,UAAZ","file":"index.js","sourcesContent":["const httpClient = require('./httpClient')\r\nconsole.log(httpClient)"]}

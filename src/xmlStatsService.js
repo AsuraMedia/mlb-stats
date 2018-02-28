@@ -12,6 +12,11 @@ export class XmlStatsService {
         return this.http.get( eventsUrl )
     }
 
+    getBoxCore ( eventId ) {
+        const boxCoreUrl = endpoints.boxCoreUrl(eventId)
+        return this.http.get( boxCoreUrl )
+    }
+
 }
 
 export default new XmlStatsService()
