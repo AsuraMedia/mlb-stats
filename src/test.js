@@ -1,12 +1,14 @@
 import { MlbService } from './mlbService'
 import { XmlStatsService } from './xmlStatsService'
-import { MlbMapReducer } from './mlbMapReducer';
+import mlbMapReducer, { MlbMapReducer } from './mlbMapReducer';
+import { MlbScheduleTask } from './mlbScheduleTask';
 
-const mapReducer = new MlbMapReducer()
-mapReducer
-    .mapSchedule()
-    .then( ( res ) => res )
-
+//xml test here
+const mlbScheduleTask = new MlbScheduleTask()
+mlbScheduleTask.getXmlData()
+    .then( ( result ) => {
+        result
+    } )
 
 //mlb schedule
 { gameday: "2017_09_06_texmlb_atlmlb_1" }

@@ -8,28 +8,18 @@ export class MlbMapReducer {
         this.mlbService = new MlbService()
     }
 
-    mapSchedule() {
-        const date = { year: '2017', month: '05', day: '13' }
+    mapSchedule( date ) {
         return this.mlbService
             .getSchedule(date)
             .catch(err => err)
             .then(({ data }) => {
-                
                 const gamesArray = data.games.game
-
-                Rx.Observable.from(gamesArray).zip(
-                    Rx.Observable.interval(1000), (game) => {
-
-                        const gameData = pick( game, [
-                            'game_pk',
-                            'game_data_directory'
-                         ] )
-                    
-                        console.log( gameData )
-                        return gameData
-                    })
-                    .subscribe()
-
+                return gamesArray.map(( game ) => {
+                    return {
+                        id: game.game_pk,
+                        path: `${game.game_data_directory}`
+                    }
+                })
             })
     }
 

@@ -17,6 +17,11 @@ export class MlbService {
         return this.http.get( scheduleUrl )
     }
 
+    getXml ( xmlPath ) {
+        const xmlUrl = endpoints.xmlUrl( xmlPath )
+        return this.http.get( xmlUrl )
+    }
+
 }
 
 export default new MlbService()
