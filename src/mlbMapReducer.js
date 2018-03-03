@@ -1,6 +1,6 @@
 import { MlbService } from './mlbService';
-
-import * as Rx from 'rxjs'
+import * as Rx from 'rxjs';
+import pick from 'lodash.pick';
 
 export class MlbMapReducer {
 
@@ -19,8 +19,14 @@ export class MlbMapReducer {
 
                 Rx.Observable.from(gamesArray).zip(
                     Rx.Observable.interval(1000), (game) => {
-                        console.log('GAME------------------------------>', game)
-                        return game
+
+                        const gameData = pick( game, [
+                            'game_pk',
+                            'game_data_directory'
+                         ] )
+                    
+                        console.log( gameData )
+                        return gameData
                     })
                     .subscribe()
 
