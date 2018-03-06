@@ -12,8 +12,8 @@ export class MlbMapReducer {
         return this.mlbService
             .getSchedule(date)
             .catch(err => err)
-            .then(({ data }) => {
-                const gamesArray = data.games.game
+            .then(( response ) => {
+                const gamesArray = response.data.data.games.game
                 return gamesArray.map(( game ) => {
                     return {
                         id: game.game_pk,

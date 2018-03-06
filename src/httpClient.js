@@ -14,7 +14,7 @@ export class HttpClient extends AxiosBase {
                 return err
             })
             .then((res) => {
-                return res.data
+                return res
             })
     }
 

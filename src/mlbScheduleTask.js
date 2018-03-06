@@ -17,12 +17,9 @@ export class MlbScheduleTask {
             .then( ( scheduleResult ) => {
                 return scheduleResult.map( ( schedule ) => {
                     return {
-                        xmlUrl: `${config.baseURL}${schedule.path}/inning/inning_all.xml`
+                        xmlUrl: `${schedule.path}`
                     }
                 } )
-            } )
-            .then( ( xmlUrls ) => {
-                console.log( 'XML URLS ----------> ', xmlUrls )
             } )
 
     }
