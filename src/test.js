@@ -12,7 +12,9 @@ import {
     Runner,
     RunnerHeader,
     Top
- } from './xmlTypes'
+ } from './xmlDataTypes'
+
+ import { EventRow } from './eventTypes'
 
 //xml test here
 const mlbService = new MlbService()
@@ -28,6 +30,8 @@ mlbScheduleTask.getXmlData()
                 } else {
 
                     const fs = require('file-system');
+
+                    let eventRow: EventRow = {};
                     let inningsArray: Array<Inning> = [];
 
                     const parseString = require('xml2js').parseString
@@ -35,8 +39,14 @@ mlbScheduleTask.getXmlData()
                         inningsArray = result.game.inning;
                     });
 
-                    inningsArray.forEach((inning: Inning) => {
-                        console.log('INNING ----------------->', inning)
+                    inningsArray.forEach( ( inning: Inning ) => {
+                        inning.top.forEach( ( topHalf ) => {
+                            topHalf.atbat.forEach( ( atbat ) => {
+                                atbat.pitch.forEach( ( pitch ) => {
+                                    console.log( 'PITCH ----> ', pitch )
+                                } )
+                            } )
+                        })
                     })
                     
 
