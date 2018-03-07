@@ -12,7 +12,7 @@ export type EventRow = {
   previousNoPitches: string,
   prevEventPitchType: string,
   prevPitchLocation: string,
-  avgFFvelocity: string,
+  avgFFspeed: string,
   avgFFzone: string,
   avgFFbreakAngle: string,
   event: string
