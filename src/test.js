@@ -2,6 +2,17 @@ import { MlbService } from './mlbService'
 import { XmlStatsService } from './xmlStatsService'
 import mlbMapReducer, { MlbMapReducer } from './mlbMapReducer';
 import { MlbScheduleTask } from './mlbScheduleTask';
+import { 
+    Inning,
+    InningHeader,
+    AtBat,
+    AtBatHeader,
+    Pitch,
+    PitchHeader,
+    Runner,
+    RunnerHeader,
+    Top
+ } from './xmlTypes'
 
 //xml test here
 const mlbService = new MlbService()
@@ -17,13 +28,16 @@ mlbScheduleTask.getXmlData()
                 } else {
 
                     const fs = require('file-system');
-                    let inningsArray = [];
+                    let inningsArray: Array<Inning> = [];
 
                     const parseString = require('xml2js').parseString
                     parseString(response.data, (err, result) => {
                         inningsArray = result.game.inning;
                     });
 
+                    inningsArray.forEach((inning: Inning) => {
+                        console.log('INNING ----------------->', inning)
+                    })
                     
 
                     // fs.writeFile('innings.json', JSON.stringify(inningsArray), (err) => {
