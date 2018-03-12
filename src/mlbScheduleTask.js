@@ -1,8 +1,10 @@
+//@flow
 import * as Rx from 'rxjs';
 import { MlbMapReducer } from './mlbMapReducer';
 import { config } from './mlbApiConfig';
+import { Moment } from 'moment';
 
-const moment = require('moment');
+const moment = require( 'moment' );
 
 export class MlbScheduleTask {
 
@@ -10,43 +12,50 @@ export class MlbScheduleTask {
 
     }
 
-    getXmlData ( days ) {
+    getXmlUrls ( days ) {
 
         const mapReducer = new MlbMapReducer()
 
-        Rx.Observable.from( days ).zip(
-            Rx.Observable.interval(1000), ( day ) => {
-
-                console.log( 'MONTH ------------------>', day.format("dddd, MMMM Do YYYY, h:mm:ss a") )
-                
+        return Rx.Observable.from( days ).zip(
+            Rx.Observable.interval( 5000 ), ( momentDay: Moment ) => {
+                return { 
+                    year: momentDay.format( 'YYYY' ), 
+                    month: momentDay.format( 'MM' ), 
+                    day: momentDay.format( 'DD' ) 
+                }
+            } )
+            .map(( date ) => {
+                return Rx.Observable.fromPromise(
+                    mapReducer.mapSchedule( date )
+                        .then( ( scheduleResult ) => {
+                            return scheduleResult.map( ( schedule ) => {
+                                return {
+                                    date: date,
+                                    xmlUrl: `${schedule.path}`
+                                }
+                            } )
+                        } )
+                )
             })
-            .subscribe()
+            .concatAll()
 
-        // return mapReducer.mapSchedule( date )
-        //     .then( ( scheduleResult ) => {
-        //         return scheduleResult.map( ( schedule ) => {
-        //             return {
-        //                 date: date,
-        //                 xmlUrl: `${schedule.path}`
-        //             }
-        //         } )
-        //     } )
+
 
     }
 
-    getDaysArrayByMonth( date ) {
-        var momentDate = moment(`${date.year}-${date.month}`, "YYYY-MM")
+    getDaysArrayByMonth ( date ) {
+        var momentDate = moment( `${date.year}-${date.month}`, "YYYY-MM" )
         var daysInMonth = momentDate.daysInMonth();
         var arrDays = [];
-      
-        while(daysInMonth) {
-          var current = moment(`${date.year}-${date.month}`, "YYYY-MM").date(daysInMonth);
-          arrDays.push(current);
-          daysInMonth--;
+
+        while ( daysInMonth ) {
+            var current = moment( `${date.year}-${date.month}`, "YYYY-MM" ).date( daysInMonth );
+            arrDays.push( current );
+            daysInMonth--;
         }
 
         return arrDays;
-      }
+    }
 
 }
 
