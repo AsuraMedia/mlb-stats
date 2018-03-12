@@ -325,12 +325,12 @@ for ( let xmlFilesIndex in xmlFiles ) {
 
     console.log( '*** ---------------- DONE ---------------*** ' )
 
-    json2csv(eventDataSet, (err, csv) => {
-      console.log("CSV ---------------> ", csv);
-      fs.writeFile(`./dataSet1.csv`, csv, err => {
-        console.log("Saved file csv ---> ", "dataSet1.csv");
-      });
-    });
+    // json2csv(eventDataSet, (err, csv) => {
+    //   console.log("CSV ---------------> ", csv);
+    //   fs.writeFile(`./dataSet2.csv`, csv, err => {
+    //     console.log("Saved file csv ---> ", "dataSet1.csv");
+    //   });
+    // });
 
     // const mlbService = new MlbService()
     // const mlbScheduleTask = new MlbScheduleTask()
