@@ -23,11 +23,18 @@ const fs = require( 'file-system' );
 import { json2csv } from 'json-2-csv';
 const parseString = require( 'xml2js' ).parseString
 
+const mlbScheduleTask = new MlbScheduleTask();
+
+const date = { year: "2016", month: "04" };
+const datePath = `${date.year}_${date.month}`;
+
+//mlbScheduleTask.getByDate( date );
+
 //xml test here
 
 let eventDataSet: Array<EventRow> = [];
 
-const xmlFiles = fs.fs.readdirSync( './xml' ).filter( file => file.indexOf( 'DS' ) === -1 )
+const xmlFiles = fs.fs.readdirSync( `./xml/${datePath}` ).filter( file => file.indexOf( 'DS' ) === -1 )
 //const list = [].concat(xmlFiles.pop())
 
 for ( let xmlFilesIndex in xmlFiles ) {
@@ -35,7 +42,9 @@ for ( let xmlFilesIndex in xmlFiles ) {
     let inningsArray: Array<Inning> = [];
     let pitchesDataPerAtBat = {};
     const xmlPath = xmlFiles[xmlFilesIndex]
-    const xml = fs.fs.readFileSync( `./xml/${xmlPath.replace('._', '')}`, { encoding: "utf8" } )
+    const xml = fs.fs.readFileSync( `./xml/${datePath}/${xmlPath.replace('._', '')}`, {
+        encoding: "utf8" 
+    } )
 
     parseString( xml, ( err, result ) => {
         inningsArray = result.game.inning
@@ -84,7 +93,7 @@ for ( let xmlFilesIndex in xmlFiles ) {
                 for ( let atbatIndex in topHalf.atbat) {
                     let zonesDictionary = {};
                     const atbat = topHalf.atbat[atbatIndex]
-                    if ( atbat.pitch ) {
+                    if ( atbat.pitch && atbat.pitch[0].$.pitch_type ) {
                         for ( let pitchIndex in atbat.pitch ) {
                             const pitch = atbat.pitch[pitchIndex]
                                 if ( !pitchesDataPerAtBat[atbat.$.play_guid] ) {
@@ -207,7 +216,7 @@ for ( let xmlFilesIndex in xmlFiles ) {
                 for ( let atbatIndex in bottomHalf.atbat) {
                     let zonesDictionary = {};
                     const atbat = bottomHalf.atbat[atbatIndex]
-                    if ( atbat.pitch ) {
+                    if ( atbat.pitch && atbat.pitch[0].$.pitch_type ) {
                         for ( let pitchIndex in atbat.pitch ) {
                             const pitch = atbat.pitch[pitchIndex]
                                 if ( !pitchesDataPerAtBat[atbat.$.play_guid] ) {
@@ -292,7 +301,7 @@ for ( let xmlFilesIndex in xmlFiles ) {
                             awayTeamRuns: parseInt(atbat.$.away_team_runs),
                             runnersOn: atbat.runner ? atbat.runner.length : 0,
                             avgFTspeed: calculateAvgPitchVelocity( 'FT', pitchesDataPerAtBat ),
-                            avgZone: calculateAvgPitchZone( pitchesDataPerAtBat ),
+                            avgZone: calculateAvgPitchZone( zonesDictionary ),
                             Lineout: atbat.$.event === 'Lineout' ? 1 : 0,
                             Single: atbat.$.event === 'Single' ? 1 : 0,
                             Double: atbat.$.event === 'Double' ? 1 : 0,
@@ -325,46 +334,11 @@ for ( let xmlFilesIndex in xmlFiles ) {
 
     console.log( '*** ---------------- DONE ---------------*** ' )
 
-    // json2csv(eventDataSet, (err, csv) => {
-    //   console.log("CSV ---------------> ", csv);
-    //   fs.writeFile(`./dataSet2.csv`, csv, err => {
-    //     console.log("Saved file csv ---> ", "dataSet1.csv");
-    //   });
-    // });
-
-    // const mlbService = new MlbService()
-    // const mlbScheduleTask = new MlbScheduleTask()
-
-    // const date = { year: '2016', month: '04' }
-
-    // const days = mlbScheduleTask.getDaysArrayByMonth( date );
-
-    // mlbScheduleTask.getXmlUrls( days )
-    //     .map( ( result ) => {
-    //         return result
-    //     } )
-    //     .subscribe( ( urlList ) => {
-    //         Rx.Observable.from( urlList ).zip(
-    //             Rx.Observable.interval( 12000 ), ( url ) => {
-    //                 mlbService.getXml( url.xmlUrl )
-    //                     .then( ( response ) => {
-    //                         if ( response.status !== 200 ) {
-    //                             //
-    //                         } else {
-    //                             const xml = response.data
-    //                             const fileName = url.xmlUrl.split('/').pop();
-    //                             fs.writeFile(`./xml/${fileName}.xml`, xml, err => {
-    //                                 console.log('Saved file xml ---> ', fileName);
-    //                             });
-    //                         }
-    //                     } )
-    //             } )
-    //             .subscribe()
-    //     } )
-
-    // mlbScheduleTask.getXmlData( date )
-    //     .then((urlList) => { 
-    //         console.log(urlList)
-    //     })
+    json2csv(eventDataSet, (err, csv) => {
+      console.log("CSV ---------------> ", csv);
+      fs.writeFile(`./${date.year}_${date.month}.csv`, csv, err => {
+        console.log("Saved file csv ---> ", "dataSet1.csv");
+      });
+    });
 
 

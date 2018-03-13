@@ -14,6 +14,9 @@ export class MlbMapReducer {
             .catch(err => err)
             .then(( response ) => {
                 const gamesArray = response.data.data.games.game
+                if ( !gamesArray || !gamesArray.length ) {
+                    return []
+                }
                 return gamesArray.map(( game ) => {
                     return {
                         id: game.game_pk,
