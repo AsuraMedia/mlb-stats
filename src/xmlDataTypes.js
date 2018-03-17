@@ -174,7 +174,7 @@ export interface PitchZonePitcher {
     zone: string;
 }
 
-export interface PitchZoneBatter extends PitchZonePitcher = {
+export interface PitchZoneBatter extends PitchZonePitcher {
     player_at_bat: string
 }
 

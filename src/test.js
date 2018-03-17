@@ -9,11 +9,4 @@ import { transformXml } from './transformData'
     // transform the data
     transformXml();
 
-    // json2csv(eventDataSet, (err, csv) => {
-    //   console.log("CSV ---------------> ", csv);
-    //   fs.writeFile(`./${date.year}_${date.month}.csv`, csv, err => {
-    //     console.log("Saved file csv ---> ", `./${date.year}_${date.month}.csv`);
-    //   });
-    // });
-
 
