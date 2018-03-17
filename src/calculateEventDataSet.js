@@ -68,7 +68,7 @@ export const calculateEventDataSet = (
         pit : inning.$.home_team === 'pit' ? 1 : 0,
         bal : inning.$.home_team === 'bal' ? 1 : 0,
         sln : inning.$.home_team === 'sln' ? 1 : 0,
-        isHome : false,
+        isHome : isHome,
         batterHeight : normalizeBatterHeight( atbat.$.b_height ),
         batterHand : atbat.$.stand === 'R' ? 1 : 0,
         pitcherHand : atbat.$.p_throws === 'R' ? 1 : 0,
