@@ -10,10 +10,14 @@ import {
     Top
 } from './xmlDataTypes'
 
+//libs
+import * as Rx from 'rxjs';
+import { json2csv } from 'json-2-csv';
+
 import { pitchesTypeModel } from './pitchesTypeModel'
 import { calculateEventDataSet } from './calculateEventDataSet'
 import { EventRow } from './eventTypes';
-import { json2csv } from 'json-2-csv';
+import { MlbService } from './mlbService';
 
 const fs = require( 'file-system' );
 const parseString = require( 'xml2js' ).parseString
@@ -154,7 +158,27 @@ export const transformXml = () => {
         console.log( '*** --- Pitchers --- *** ', allPitchers )
         console.log( '*** --- Batters --- *** ', allBatters )
     
-        //Save players baseballadvantstats
-    
-        console.log( '*** ---------------- DONE ---------------*** ' )
+        //Save players baseball avant stats
+        const mlbService = new MlbService();
+        const pitchersArray = Object.keys( allPitchers );
+
+        return Rx.Observable.from( pitchersArray ).zip(
+            Rx.Observable.interval( 1000 ), ( pitcherId: string ) => {
+                return {
+                    playerId: pitcherId,
+                    playerType: 'pitcher',
+                    season: '2017'
+                }
+            } )
+            .map(( playerInfo: any ) => {
+                return Rx.Observable.fromPromise(
+                    mlbService.getAdvantZoneStats( playerInfo )
+                        .then( ( result ) => {
+                            console.log( 'PLAYER INFO -------> ', result.data )
+                        } ) 
+                    ) 
+            })
+            .subscribe()
+
+        //console.log( '*** ---------------- DONE ---------------*** ' )
 }
