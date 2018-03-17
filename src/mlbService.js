@@ -22,6 +22,16 @@ export class MlbService {
         return this.http.get( xmlUrl )
     }
 
+    getAdvantZoneStats ( playerInfo ) {
+        const avantUrl = endpoints.avantZoneStatsUrl( playerInfo )
+        return this.http.get( avantUrl )
+    }
+
+    getAdvantPitchBreakdownStats ( playerInfo ) {
+        const avantUrl = endpoints.avantPitchBreakdownStatsUrl( playerInfo )
+        return this.http.get( avantUrl )
+    }
+
 }
 
 export default new MlbService()

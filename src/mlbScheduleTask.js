@@ -45,7 +45,7 @@ export class MlbScheduleTask {
 
     }
 
-    getXmlUrls ( days ) {
+    getXmlUrls ( days: Array<Moment> ) {
 
         const mapReducer = new MlbMapReducer()
 
@@ -57,7 +57,7 @@ export class MlbScheduleTask {
                     day: momentDay.format( 'DD' ) 
                 }
             } )
-            .map(( date ) => {
+            .map(( date: any ) => {
                 return Rx.Observable.fromPromise(
                     mapReducer.mapSchedule( date )
                         .then( ( scheduleResult ) => {
