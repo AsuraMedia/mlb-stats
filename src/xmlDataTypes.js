@@ -106,3 +106,145 @@ export type RunnerHeader = {
     rbi: string;
     earned: string;
 }
+
+export interface PitchZonePitcher {
+    pitches: string;
+    player_id: string;
+    player_name: string;
+    total_pitches: string;
+    pitch_percent: string;
+    ba: string;
+    slg: string;
+    slg_total: string;
+    babip: string;
+    babip_total_numerator: string;
+    babip_total_denominator: string;
+    iso: string;
+    iso_total: string;
+    hits: string;
+    abs: string;
+    singles: string;
+    fouls: string;
+    whiffs: string;
+    swings: string;
+    takes: string;
+    woba: string;
+    woba_value: string;
+    xwoba: string;
+    xwoba_value: string;
+    wobadiff: string;
+    pa: string;
+    hrs: string;
+    dbls: string;
+    triples: string;
+    so: string;
+    launch_speed: string;
+    exit_velocity: string;
+    launch_angle: string;
+    effective_speed: string;
+    velocity: string;
+    spin_rate: string;
+    bbdist: string;
+    eff_min_vel: string;
+    swing_speed: string;
+    release_extension: string;
+    start_distance: string;
+    pos1_int_start_distance: string;
+    pos2_int_start_distance: string;
+    pos3_int_start_distance: string;
+    pos4_int_start_distance: string;
+    pos5_int_start_distance: string;
+    pos6_int_start_distance: string;
+    pos7_int_start_distance: string;
+    pos8_int_start_distance: string;
+    pos9_int_start_distance: string;
+    xba: string;
+    xbadiff: string;
+    xba_value: string;
+    release_pos_x: string;
+    release_pos_y: string;
+    release_pos_z: string;
+    pfx_x: string;
+    pfx_z: string;
+    px: string;
+    pz: string;
+    plate_x: string;
+    plate_z: string;
+    pitcher: number;
+    zone: string;
+}
+
+export interface PitchZoneBatter extends PitchZonePitcher = {
+    player_at_bat: string
+}
+
+export interface PitchBreakdownPitcher {
+    pitches: string;
+    player_id: string;
+    player_name: string;
+    total_pitches: string;
+    pitch_percent: string;
+    ba: string;
+    slg: string;
+    slg_total: string;
+    babip: string;
+    babip_total_numerator: string;
+    babip_total_denominator: string;
+    iso: string;
+    iso_total: string;
+    hits: string;
+    abs: string;
+    singles: string;
+    fouls: string;
+    whiffs: string;
+    swings: string;
+    takes: string;
+    woba: string;
+    woba_value: string;
+    xwoba: string;
+    xwoba_value: string;
+    wobadiff: string;
+    pa: string;
+    hrs: string;
+    dbls: string;
+    triples: string;
+    so: string;
+    launch_speed: string;
+    exit_velocity: string;
+    launch_angle: string;
+    effective_speed: string;
+    velocity: string;
+    spin_rate: string;
+    bbdist: string;
+    eff_min_vel: string;
+    swing_speed: string;
+    release_extension: string;
+    start_distance: string;
+    pos1_int_start_distance: string;
+    pos2_int_start_distance: string;
+    pos3_int_start_distance: string;
+    pos4_int_start_distance: string;
+    pos5_int_start_distance: string;
+    pos6_int_start_distance: string;
+    pos7_int_start_distance: string;
+    pos8_int_start_distance: string;
+    pos9_int_start_distance: string;
+    xba: string;
+    xbadiff: string;
+    xba_value: string;
+    release_pos_x: string;
+    release_pos_y: string;
+    release_pos_z: string;
+    pfx_x: string;
+    pfx_z: string;
+    px: string;
+    pz: string;
+    plate_x: string;
+    plate_z: string;
+    pitcher: string;
+    pitch_type: string;
+}
+
+export interface PitchBreakdownBatter extends PitchBreakdownPitcher {
+    player_at_bat: string;
+}
