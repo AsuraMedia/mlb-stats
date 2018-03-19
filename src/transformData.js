@@ -18,19 +18,21 @@ import { pitchesTypeModel } from './pitchesTypeModel'
 import { calculateEventDataSet } from './calculateEventDataSet'
 import { EventRow } from './eventTypes';
 import { MlbService } from './mlbService';
+import { SavantService } from './savantService';
+import { DateType } from './types';
 
 const fs = require( 'file-system' );
 const parseString = require( 'xml2js' ).parseString
-const date = { year: "2016", month: "04" };
-const datePath = `${date.year}_${date.month}`;
 
 let eventDataSet: Array<EventRow> = [];
-let allPitchers: [ string ] = {};
-let allBatters: [ string ] = {};
+let playersIds: { batterIds: Array<string>, pitcherIds: Array<string> };
 
-const xmlFiles = fs.fs.readdirSync( `./xml/${datePath}` ).filter( file => file.indexOf( 'DS' ) === -1 )
+export const transformXml = ( date: DateType ) => {
 
-export const transformXml = () => {
+  const savantService = new SavantService( date );
+  const datePath = `${date.year}_${date.month}`;
+  const xmlFiles = fs.fs.readdirSync( `./xml/${datePath}` ).filter( file => file.indexOf( 'DS' ) === -1 )
+
   for (let xmlFilesIndex in xmlFiles) {
 
     let inningsArray: Array<Inning> = [];
@@ -51,10 +53,8 @@ export const transformXml = () => {
 
     for (let inningsArrayIndex in inningsArray) {
       const inning = inningsArray[inningsArrayIndex];
-      /**
-       * Top of
-       * the inning
-       */
+      
+      //top of the inning 
       for (let topIndex in inning.top) {
         if (inning.$.next === "Y") {
           const topHalf = inning.top[topIndex];
@@ -63,13 +63,7 @@ export const transformXml = () => {
             const atbat = topHalf.atbat[atbatIndex];
 
             // Fill players dictionary
-            if (!allBatters[atbat.$.batter]) {
-              allBatters[atbat.$.batter] = atbatIndex;
-            }
-
-            if (!allPitchers[atbat.$.pitcher]) {
-              allPitchers[atbat.$.pitcher] = atbatIndex;
-            }
+            playersIds = savantService.fillPlayersIds( atbat )
 
             if (atbat.pitch && atbat.pitch[0].$.pitch_type) {
               for (let pitchIndex in atbat.pitch) {
@@ -107,10 +101,7 @@ export const transformXml = () => {
         }
       }
 
-      /**
-       * Bottom of
-       * the inning
-       */
+      //bottom of the inning
       for (let bottomIndex in inning.bottom) {
         if (inning.$.next === "Y") {
           const bottomHalf = inning.bottom[bottomIndex];
@@ -119,13 +110,7 @@ export const transformXml = () => {
             const atbat = bottomHalf.atbat[atbatIndex];
 
             // Fill players dictionary
-            if (!allBatters[atbat.$.batter]) {
-              allBatters[atbat.$.batter] = atbatIndex;
-            }
-
-            if (!allPitchers[atbat.$.pitcher]) {
-              allPitchers[atbat.$.pitcher] = atbatIndex;
-            }
+            playersIds = savantService.fillPlayersIds( atbat )
 
             if (atbat.pitch && atbat.pitch[0].$.pitch_type) {
               for (let pitchIndex in atbat.pitch) {
@@ -165,42 +150,20 @@ export const transformXml = () => {
         }
       }
     }
-
     console.log(" EVENT DATA SET ----------> ", eventDataSet);
   }
 
-  json2csv(eventDataSet, (err, csv) => {
-    console.log("CSV ---------------> ", csv);
-    fs.writeFile(`./${date.year}_${date.month}.csv`, csv, err => {
-      console.log("Saved file csv ---> ", `./${date.year}_${date.month}.csv`);
-    });
-  });
+  // json2csv(eventDataSet, (err, csv) => {
+  //   console.log("CSV ---------------> ", csv);
+  //   fs.writeFile(`./${date.year}_${date.month}.csv`, csv, err => {
+  //     console.log("Saved file csv ---> ", `./${date.year}_${date.month}.csv`);
+  //   });
+  // });
 
-  console.log("*** --- Pitchers --- *** ", allPitchers);
-  console.log("*** --- Batters --- *** ", allBatters);
+  //get player ids and save them
+  savantService.saveFiles( date );
 
-  //Save players baseball avant stats
-  // const mlbService = new MlbService();
-  // const pitchersArray = Object.keys( allPitchers );
-
-  // return Rx.Observable.from( pitchersArray ).zip(
-  //     Rx.Observable.interval( 1000 ), ( pitcherId: string ) => {
-  //         return {
-  //             playerId: pitcherId,
-  //             playerType: 'pitcher',
-  //             season: '2017'
-  //         }
-  //     } )
-  //     .map(( playerInfo: any ) => {
-  //         return Rx.Observable.fromPromise(
-  //             mlbService.getAdvantZoneStats( playerInfo )
-  //                 .then( ( result ) => {
-  //                     console.log( 'PLAYER INFO -------> ', result.data )
-  //                 } )
-  //             )
-  //     })
-  //     .subscribe()
-
-  //console.log( '*** ---------------- DONE ---------------*** ' )
+  //get all players savant data
+  savantService.savePlayersZoneData( date ).subscribe()
 
 };
