@@ -7,6 +7,7 @@ import * as _ from 'lodash'
 //libs
 import * as Rx from 'rxjs';
 import { MlbService } from "./mlbService";
+import { mapObjToArray } from "./utils";
 
 const fs = require( 'file-system' );
 const mlbService = new MlbService();
@@ -40,18 +41,21 @@ export class SavantService {
     
     //fill player ids
     if (!this.playerIds.batterIds[atbat.$.batter]) {
-        this.playerIds.batterIds[atbat.$.batter] = 0;
+        this.playerIds.batterIds[atbat.$.batter] = {
+            id: atbat.$.batter,
+            playerType: 'batter'
+        }
     }
     
     if (!this.playerIds.pitcherIds[atbat.$.pitcher]) {
-        this.playerIds.pitcherIds[atbat.$.pitcher] = 0;
+        this.playerIds.pitcherIds[atbat.$.pitcher] = {
+            id: atbat.$.pitcher,
+            playerType: 'pitcher'
+        }
     }
     
     //return player ids
-    return {
-        batterIds: Object.keys(this.playerIds.batterIds),
-        pitcherIds: Object.keys(this.playerIds.pitcherIds)
-    }
+    return this.playerIds
 
   }
 
@@ -62,25 +66,23 @@ export class SavantService {
 
   savePlayersZoneData ( date: DateType ) {
 
-    const pitcherIds = Object.keys(this.playerIds.pitcherIds)
-    const batterIds = Object.keys(this.playerIds.batterIds)
-    const allPlayers = pitcherIds.concat(batterIds)
-
-    const existingIds = fs.fs.readdirSync( `./json/${date.year}` )
-        .filter( x => x.indexOf('playerIds.json') === -1 )
-        .map( x => x.replace('_zone.json', '') )
+    const allPlayers = mapObjToArray( this.playerIds.pitcherIds )
+    const existingIds = 
+        fs.fs.readdirSync( `./json/${date.year}` )
+            .filter( x => x.indexOf('playerIds.json') === -1 )
+            .map( x => x.replace('_zone.json', '') )
 
     return Rx.Observable.from(allPlayers)
-        .zip(Rx.Observable.interval(5000), (pitcherId: string) => {
-            return { playerId: pitcherId, playerType: "pitcher", season: date.year };
+        .zip(Rx.Observable.interval(1000), ( item: { id: string, value: { id: string, playerType: string } }) => {
+            return { playerId: item.id, playerType: item.value.playerType, season: date.year };
         })
-        .map((playerInfo: any) => {
+        .map((playerInfo) => {
             return Rx.Observable.fromPromise(
                 mlbService
-                .getAdvantZoneStats(playerInfo)
+                .getAdvantPitchBreakdownStats(playerInfo)
                 .then(result => {
                     fs.writeFile(
-                        `./json/${date.year}/${playerInfo.playerId}_zone.json`, 
+                        `./json/${playerInfo.season}/${playerInfo.playerId}_${playerInfo.playerType}_pitchbreakdown.json`, 
                         JSON.stringify(result.data), 
                         err => {
                             console.log("Saved playerIds json file ---> ", this.playerIds );

@@ -1,3 +1,8 @@
+import { calculateZoneData } from './calculateZonePitchData'
+import { AtBat } from './xmlDataTypes';
+import { DateType } from './types';
+import * as _ from 'lodash';
+
 const normalizeBatterHeight = ( height: string ) => {
     const hList = height.split('-')
     const feet = parseInt(hList[0])
@@ -29,14 +34,15 @@ const calculateAvgPitchZone = ( zonesDictionary ) => {
     return maxValue.key
 }
 
-export const calculateEventDataSet = ( 
+export const calculateEventDataSet = ( date: DateType,
     inning, 
     isHome,
-    atbat, 
+    atbat: AtBat, 
     pitchesDataPerAtBat, 
     zonesDictionary 
 ) => {
-    return new Object({
+
+    const firstSet = {
         inningNo : inning.$.num,
         ana : inning.$.home_team === 'ana' ? 1 : 0,
         lan : inning.$.home_team === 'lan' ? 1 : 0,
@@ -110,5 +116,11 @@ export const calculateEventDataSet = (
         IntentWalk : atbat.$.event === 'Intent Walk' ? 1 : 0,
         DoublePlay : atbat.$.event === 'Double Play' ? 1 : 0,
         FieldersChoiceOut : atbat.$.event === 'Fielders Choice Out' ? 1 : 0
-    })
+    }
+
+    const secondSet = calculateZoneData( date, atbat.$.pitcher, 'pitcher' );
+    const thirdSet = calculateZoneData( date, atbat.$.batter, 'batter' );
+    const finalResultSet = _.assign( new Object(), firstSet, secondSet, thirdSet );
+    
+    return finalResultSet;
 }

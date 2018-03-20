@@ -89,6 +89,7 @@ export const transformXml = ( date: DateType ) => {
               }
               eventDataSet.push(
                 calculateEventDataSet(
+                  date,
                   inning,
                   false,
                   atbat,
@@ -138,6 +139,7 @@ export const transformXml = ( date: DateType ) => {
               }
               eventDataSet.push(
                 calculateEventDataSet(
+                  date,
                   inning,
                   true,
                   atbat,
@@ -153,17 +155,19 @@ export const transformXml = ( date: DateType ) => {
     console.log(" EVENT DATA SET ----------> ", eventDataSet);
   }
 
+  console.log( 'COLS --------------------------->', Object.keys( eventDataSet[0] ).length )
+
   // json2csv(eventDataSet, (err, csv) => {
   //   console.log("CSV ---------------> ", csv);
   //   fs.writeFile(`./${date.year}_${date.month}.csv`, csv, err => {
-  //     console.log("Saved file csv ---> ", `./${date.year}_${date.month}.csv`);
+  //     console.log("Saved file csv ---> ", `./${date.year}_${date.month}_v2.csv`);
   //   });
   // });
 
   //get player ids and save them
-  savantService.saveFiles( date );
+  //savantService.saveFiles( date );
 
   //get all players savant data
-  savantService.savePlayersZoneData( date ).subscribe()
+  //savantService.savePlayersZoneData( date ).subscribe()
 
 };
