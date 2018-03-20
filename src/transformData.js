@@ -155,14 +155,14 @@ export const transformXml = ( date: DateType ) => {
     console.log(" EVENT DATA SET ----------> ", eventDataSet);
   }
 
-  console.log( 'COLS --------------------------->', Object.keys( eventDataSet[0] ).length )
+  //console.log( 'COLS --------------------------->', Object.keys( eventDataSet[0] ).length )
 
-  // json2csv(eventDataSet, (err, csv) => {
-  //   console.log("CSV ---------------> ", csv);
-  //   fs.writeFile(`./${date.year}_${date.month}.csv`, csv, err => {
-  //     console.log("Saved file csv ---> ", `./${date.year}_${date.month}_v2.csv`);
-  //   });
-  // });
+  json2csv(eventDataSet, (err, csv) => {
+    const fileName = `${date.year}_${date.month}_v2.csv`;
+    fs.writeFile(`./${fileName}`, csv, err => {
+      console.log("Saved file csv ---> ", `./${fileName}`);
+    });
+  });
 
   //get player ids and save them
   //savantService.saveFiles( date );

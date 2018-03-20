@@ -1,7 +1,8 @@
-import { calculateZoneData } from './calculateZonePitchData'
 import { AtBat } from './xmlDataTypes';
 import { DateType } from './types';
 import * as _ from 'lodash';
+import { calculateZoneData } from './calculateZonePitchData';
+import { calculatePitchData } from './calculatePitchBreakdownData';
 
 const normalizeBatterHeight = ( height: string ) => {
     const hList = height.split('-')
@@ -95,6 +96,7 @@ export const calculateEventDataSet = ( date: DateType,
         avgSCspeed : calculateAvgPitchVelocity( 'SC', pitchesDataPerAtBat ),
         avgSIspeed : calculateAvgPitchVelocity( 'SI', pitchesDataPerAtBat ),
         avgZone : calculateAvgPitchZone( zonesDictionary ),
+        eventZone: pitchesDataPerAtBat[atbat.$.play_guid].zone,
         Lineout : atbat.$.event === 'Lineout' ? 1 : 0,
         Single : atbat.$.event === 'Single' ? 1 : 0,
         Double : atbat.$.event === 'Double' ? 1 : 0,
@@ -118,9 +120,22 @@ export const calculateEventDataSet = ( date: DateType,
         FieldersChoiceOut : atbat.$.event === 'Fielders Choice Out' ? 1 : 0
     }
 
+    // pitch zone data set
     const secondSet = calculateZoneData( date, atbat.$.pitcher, 'pitcher' );
     const thirdSet = calculateZoneData( date, atbat.$.batter, 'batter' );
-    const finalResultSet = _.assign( new Object(), firstSet, secondSet, thirdSet );
+
+    // pitch breakdown data set
+    const fourthSet = calculatePitchData( date, atbat.$.pitcher, 'pitcher' );
+    const fifthSet = calculatePitchData( date, atbat.$.batter, 'batter' );
+
+    // combine all data set props
+    const finalResultSet = _.assign( new Object(), 
+        firstSet, 
+        secondSet, 
+        thirdSet,
+        fourthSet,
+        fifthSet 
+    );
     
     return finalResultSet;
 }
