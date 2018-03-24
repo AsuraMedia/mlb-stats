@@ -10,6 +10,3 @@ import { calculateZoneData } from './calculateZonePitchData';
     const date: DateType = { year: "2016", month: "04", day: "01" };
     transformXml( date );
 
-    // const data = calculateZoneData( date, '431151', 'pitcher' );
-    // console.log( 'ZONE DATA -----------------> ', JSON.stringify( data ) );
-

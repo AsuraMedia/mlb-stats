@@ -17,10 +17,10 @@ export class SavantService {
     this.http = new HttpClient(config);
   }
 
-  getPlayerIds ( date: DateType ) {
+  getPlayerIds () {
     let json = {};
     try {
-        json = fs.fs.readFileSync( `./json/${date.year}/playerIds.json`, {
+        json = fs.fs.readFileSync( `./json/players/playerIds.json`, {
             encoding: "utf8" 
         });
     } catch (err) {

@@ -27,6 +27,7 @@ export interface PitchBreakdownData {
   pitches: string;
   player_id: number;
   player_name: string;
+  pa: string;
   ba: string;
   slg: string;
   hits: string;

@@ -1,40 +1,41 @@
 import {
-    Inning,
-    InningHeader,
-    AtBat,
-    AtBatHeader,
-    Pitch,
-    PitchHeader,
-    Runner,
-    RunnerHeader,
-    Top
-} from './xmlDataTypes'
+  Inning,
+  InningHeader,
+  AtBat,
+  AtBatHeader,
+  Pitch,
+  PitchHeader,
+  Runner,
+  RunnerHeader,
+  Top
+} from "./xmlDataTypes";
 
 //libs
-import * as Rx from 'rxjs';
-import { json2csv } from 'json-2-csv';
+import * as Rx from "rxjs";
+import { json2csv } from "json-2-csv";
 
-import { pitchesTypeModel } from './pitchesTypeModel'
-import { calculateEventDataSet } from './calculateEventDataSet'
-import { EventRow } from './eventTypes';
-import { MlbService } from './mlbService';
-import { SavantService } from './savantService';
-import { DateType } from './types';
+import { pitchesTypeModel } from "./pitchesTypeModel";
+import { calculateEventDataSet } from "./calculateEventDataSet";
+import { EventRow } from "./eventTypes";
+import { MlbService } from "./mlbService";
+import { SavantService } from "./savantService";
+import { DateType } from "./types";
 
-const fs = require( 'file-system' );
-const parseString = require( 'xml2js' ).parseString
+const fs = require("file-system");
+const parseString = require("xml2js").parseString;
 
+let csvDataSet: Array<EventRow> = [];
 let eventDataSet: Array<EventRow> = [];
 let playersIds: { batterIds: Array<string>, pitcherIds: Array<string> };
 
-export const transformXml = ( date: DateType ) => {
-
-  const savantService = new SavantService( date );
+export const transformXml = (date: DateType) => {
+  const savantService = new SavantService(date);
   const datePath = `${date.year}_${date.month}`;
-  const xmlFiles = fs.fs.readdirSync( `./xml/${datePath}` ).filter( file => file.indexOf( 'DS' ) === -1 )
+  const xmlFiles = fs.fs
+    .readdirSync(`./xml/${datePath}`)
+    .filter(file => file.indexOf("DS") === -1);
 
   for (let xmlFilesIndex in xmlFiles) {
-
     let inningsArray: Array<Inning> = [];
     let topPitchesDataPerAtBat = {};
     let bottomPitchesDataPerAtBat = {};
@@ -53,17 +54,18 @@ export const transformXml = ( date: DateType ) => {
 
     for (let inningsArrayIndex in inningsArray) {
       const inning = inningsArray[inningsArrayIndex];
-      
-      //top of the inning 
+
+      //top of the inning
       for (let topIndex in inning.top) {
         if (inning.$.next === "Y") {
           const topHalf = inning.top[topIndex];
           for (let atbatIndex in topHalf.atbat) {
+            let eventPitch = {};
             let zonesDictionary = {};
             const atbat = topHalf.atbat[atbatIndex];
 
             // Fill players dictionary
-            playersIds = savantService.fillPlayersIds( atbat )
+            playersIds = savantService.fillPlayersIds(atbat);
 
             if (atbat.pitch && atbat.pitch[0].$.pitch_type) {
               for (let pitchIndex in atbat.pitch) {
@@ -72,6 +74,7 @@ export const transformXml = ( date: DateType ) => {
                   topPitchesDataPerAtBat[atbat.$.play_guid] = pitchesTypeModel;
                 }
                 if (pitch.$.pitch_type) {
+                  eventPitch = atbat.pitch[atbat.pitch.length - 1].$
                   // Average pitch speed
                   topPitchesDataPerAtBat[atbat.$.play_guid][
                     pitch.$.pitch_type + "count"
@@ -87,14 +90,17 @@ export const transformXml = ( date: DateType ) => {
                   }
                 }
               }
+
               eventDataSet.push(
                 calculateEventDataSet(
                   date,
-                  inning,
+                  inning.$.num,
+                  inning.$.home_team,
                   false,
                   atbat,
                   topPitchesDataPerAtBat,
-                  zonesDictionary
+                  zonesDictionary,
+                  eventPitch
                 )
               );
             }
@@ -107,11 +113,12 @@ export const transformXml = ( date: DateType ) => {
         if (inning.$.next === "Y") {
           const bottomHalf = inning.bottom[bottomIndex];
           for (let atbatIndex in bottomHalf.atbat) {
+            let eventPitch: PitchHeader = {};
             let zonesDictionary = {};
             const atbat = bottomHalf.atbat[atbatIndex];
 
             // Fill players dictionary
-            playersIds = savantService.fillPlayersIds( atbat )
+            playersIds = savantService.fillPlayersIds(atbat);
 
             if (atbat.pitch && atbat.pitch[0].$.pitch_type) {
               for (let pitchIndex in atbat.pitch) {
@@ -122,6 +129,7 @@ export const transformXml = ( date: DateType ) => {
                   ] = pitchesTypeModel;
                 }
                 if (pitch.$.pitch_type) {
+                  eventPitch = atbat.pitch[atbat.pitch.length - 1].$
                   // Average pitch speed
                   bottomPitchesDataPerAtBat[atbat.$.play_guid][
                     pitch.$.pitch_type + "count"
@@ -140,11 +148,13 @@ export const transformXml = ( date: DateType ) => {
               eventDataSet.push(
                 calculateEventDataSet(
                   date,
-                  inning,
+                  inning.$.num,
+                  inning.$.away_team,
                   true,
                   atbat,
                   bottomPitchesDataPerAtBat,
-                  zonesDictionary
+                  zonesDictionary,
+                  eventPitch
                 )
               );
             }
@@ -158,7 +168,7 @@ export const transformXml = ( date: DateType ) => {
   //console.log( 'COLS --------------------------->', Object.keys( eventDataSet[0] ).length )
 
   json2csv(eventDataSet, (err, csv) => {
-    const fileName = `${date.year}_${date.month}_v2.csv`;
+    const fileName = `${date.year}_${date.month}_2.2.csv`;
     fs.writeFile(`./${fileName}`, csv, err => {
       console.log("Saved file csv ---> ", `./${fileName}`);
     });
@@ -169,5 +179,4 @@ export const transformXml = ( date: DateType ) => {
 
   //get all players savant data
   //savantService.savePlayersZoneData( date ).subscribe()
-
 };

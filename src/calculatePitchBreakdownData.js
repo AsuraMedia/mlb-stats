@@ -9,11 +9,11 @@ let globalPitchData = {};
 const pitchTypes = ['FF','FT','FA','FS','FO','FC','CH','CU','SL','KC','KN','SC','SI'];
 
 const getPitchMetric = ( pitchType: string, name: string, id: string ) => {
-    const pitchData = _.first( globalPitchData[id].filter( data => data.pitch_type == pitchType) )
-    if ( !pitchData ) {
+    const data = _.first( globalPitchData[id].filter( data => data.pitch_type == pitchType) )
+    if ( !data ) {
         return 0
     }
-    return pitchData[name]
+    return data[name]
 }
 
 const getPitchData = ( playerType: string, id: string ) => {
@@ -24,6 +24,7 @@ const getPitchData = ( playerType: string, id: string ) => {
     pitchTypes.forEach( ( type ) => {
         dynamicObject[pType + "PitchBreakdown" + type + "Pitches"] = getPitchMetric( type, 'pitches', id );
         dynamicObject[pType + "PitchBreakdown" + type + "Pa"] = getPitchMetric( type, 'pa', id );
+        dynamicObject[pType + "PitchBreakdown" + type + "Ba"] = getPitchMetric( type, 'ba', id );
         dynamicObject[pType + "PitchBreakdown" + type + "Slg"] = getPitchMetric( type, 'slg', id );
         dynamicObject[pType + "PitchBreakdown" + type + "Hits"] = getPitchMetric( type, 'hits', id );
         dynamicObject[pType + "PitchBreakdown" + type + "Whiffs"] = getPitchMetric( type, 'whiffs', id );

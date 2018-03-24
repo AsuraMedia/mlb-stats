@@ -36,6 +36,8 @@
     "file-system": "^2.2.2",
     "flow-bin": "^0.66.0",
     "json-2-csv": "2.0.0",
+    "lodash": "^4.17.5",
+    "lodash.difference": "^4.5.0",
     "lodash.pick": "^4.4.0",
     "moment": "^2.21.0",
     "npx": "9.7.1",

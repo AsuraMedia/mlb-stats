@@ -9,8 +9,11 @@ let globalZoneData = {};
 const zones = ['1','2','3','4','5','6','7','8','9','11','12','13','14'];
 
 const getZoneMetric = ( zone: string, name: string, id: string ) => {
-    return globalZoneData[id].length ? 
-    _.first( globalZoneData[id].filter(z => z.zone == zone) )[name] : 0
+    const data = _.first( globalZoneData[id].filter(z => z.zone == zone) )
+    if ( !data ) {
+        return 0
+    }
+    return globalZoneData[id].length ? data[name] : 0
 }
 
 const getZoneData = ( playerType: string, id: string ) => {
@@ -21,6 +24,7 @@ const getZoneData = ( playerType: string, id: string ) => {
     zones.forEach( ( zone ) => {
         dynamicObject[pType + "Zone" + zone + "Pitches"] = getZoneMetric( zone, 'pitches', id );
         dynamicObject[pType + "Zone" + zone + "Pa"] = getZoneMetric( zone, 'pa', id );
+        dynamicObject[pType + "Zone" + zone + "Ba"] = getZoneMetric( zone, 'ba', id );
         dynamicObject[pType + "Zone" + zone + "Slg"] = getZoneMetric( zone, 'slg', id );
         dynamicObject[pType + "Zone" + zone + "Hits"] = getZoneMetric( zone, 'hits', id );
         dynamicObject[pType + "Zone" + zone + "Whiffs"] = getZoneMetric( zone, 'whiffs', id );
