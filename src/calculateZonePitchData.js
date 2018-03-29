@@ -1,3 +1,5 @@
+import { isEmpty } from './utils'
+
 //libs
 import * as _ from 'lodash'
 const fs = require( 'file-system' );
@@ -9,11 +11,14 @@ let globalZoneData = {};
 const zones = ['1','2','3','4','5','6','7','8','9','11','12','13','14'];
 
 const getZoneMetric = ( zone: string, name: string, id: string ) => {
+    if (!globalZoneData[id].filter){
+        return 0
+    }
     const data = _.first( globalZoneData[id].filter(z => z.zone == zone) )
     if ( !data ) {
         return 0
     }
-    return globalZoneData[id].length ? data[name] : 0
+    return !isEmpty(data[name]) ? data[name] : 0
 }
 
 const getZoneData = ( playerType: string, id: string ) => {
@@ -43,6 +48,9 @@ const getZoneData = ( playerType: string, id: string ) => {
 
 const jsonSerializeData = ( date, playerId: string, playerType: string ): Array<ZoneData>  => {
     let json = {};
+    if ( globalZoneData.length ) {
+        return globalZoneData
+    }
     try {
         json = fs.fs.readFileSync( `./json/${date.year}/${playerId}_${playerType}_zone.json`, {
             encoding: "utf8" 
@@ -50,7 +58,7 @@ const jsonSerializeData = ( date, playerId: string, playerType: string ): Array<
     } catch ( err ) {
         json = JSON.stringify([])
     }
-    return JSON.parse( json );
+    return json == 'undefined' ? JSON.stringify([]) : JSON.parse( json )
 }
 
 export const calculateZoneData = ( date: DateType, playerId: string, playerType: string ) => {

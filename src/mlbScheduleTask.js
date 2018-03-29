@@ -20,28 +20,28 @@ export class MlbScheduleTask {
         const days = this.getDaysArrayByMonth(date);
 
         this.getXmlUrls(days)
-          .map(result => {
-            return result;
-          })
-          .subscribe(urlList => {
-              if ( urlList.length ) { 
-            Rx.Observable.from(urlList)
-              .zip(Rx.Observable.interval(12000), url => {
-                mlbService.getXml(url.xmlUrl).then(response => {
-                  if (response.status !== 200) {
-                    //
-                  } else {
-                    const xml = response.data;
-                    const fileName = url.xmlUrl.split("/").pop();
-                    fs.writeFile(`./xml/${date.year}_${date.month}/${fileName}.xml`, xml, err => {
-                      console.log("Saved file xml ---> ", fileName);
-                    });
-                  }
-                });
-              })
-              .subscribe();
-            }
-          });
+            .map(result => {
+                return result;
+            })
+            .subscribe(urlList => {
+                if ( urlList.length ) { 
+                    Rx.Observable.from(urlList)
+                        .zip(Rx.Observable.interval(12000), url => {
+                            mlbService.getXml(url.xmlUrl).then(response => {
+                            if (response.status !== 200) {
+                                //
+                            } else {
+                                const xml = response.data;
+                                const fileName = url.xmlUrl.split("/").pop();
+                                fs.writeFile(`./xml/${date.year}_${date.month}/${fileName}.xml`, xml, err => {
+                                console.log("Saved file xml ---> ", fileName);
+                                });
+                            }
+                            });
+                        })
+                .subscribe();
+                }
+            });
 
     }
 

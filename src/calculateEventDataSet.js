@@ -3,6 +3,7 @@ import { DateType } from './types';
 import * as _ from 'lodash';
 import { calculateZoneData } from './calculateZonePitchData';
 import { calculatePitchData } from './calculatePitchBreakdownData';
+import { isEmpty } from './utils';
 
 const normalizeBatterHeight = ( height: string ) => {
     const hList = height.split('-')
@@ -33,6 +34,34 @@ const calculateAvgPitchZone = ( zonesDictionary ) => {
         }
     }
     return maxValue.key
+}
+
+const calculateOutput = ( event ) => {
+
+    let outputDictionary = new Map();
+
+    outputDictionary.set('Single', 'Hit');
+    outputDictionary.set('Double', 'Hit');
+    outputDictionary.set('Triple', 'Hit');
+    outputDictionary.set('Home Run', 'Hit');
+    outputDictionary.set('Lineout', 'Out');
+    outputDictionary.set('Flyout', 'Out');
+    outputDictionary.set('Groundout', 'Out');
+    outputDictionary.set('Grounded Into DP', 'Out');
+    outputDictionary.set('Sac Fly', 'Out');
+    outputDictionary.set('Forceout', 'Out');
+    outputDictionary.set('Sac Bunt', 'Out');
+    outputDictionary.set('Popout', 'Out');
+    outputDictionary.set('Double Play', 'Out');
+    outputDictionary.set('Fielders Choice Out', 'Out');
+    outputDictionary.set('Strikeout', 'K');
+    outputDictionary.set('Walk', 'Walk');
+
+    if ( !outputDictionary.get( event ) ) {
+        return 'Other'
+    }
+    
+    return outputDictionary.get( event );
 }
 
 export const calculateEventDataSet = ( date: DateType, 
@@ -87,20 +116,9 @@ export const calculateEventDataSet = ( date: DateType,
         balls: atbat.$.b,
         strikes: atbat.$.s,
         outs: atbat.$.o,
-        avgFFspeed : calculateAvgPitchVelocity( 'FF', pitchesDataPerAtBat ),
-        avgFTspeed : calculateAvgPitchVelocity( 'FT', pitchesDataPerAtBat ),
-        avgFAspeed : calculateAvgPitchVelocity( 'FA', pitchesDataPerAtBat ),
-        avgFSspeed : calculateAvgPitchVelocity( 'FS', pitchesDataPerAtBat ),
-        avgFOspeed : calculateAvgPitchVelocity( 'FO', pitchesDataPerAtBat ),
-        avgFCspeed : calculateAvgPitchVelocity( 'FC', pitchesDataPerAtBat ),
-        avgCHspeed : calculateAvgPitchVelocity( 'CH', pitchesDataPerAtBat ),
-        avgCUspeed : calculateAvgPitchVelocity( 'CU', pitchesDataPerAtBat ),
-        avgSLspeed : calculateAvgPitchVelocity( 'SL', pitchesDataPerAtBat ),
-        avgKCspeed : calculateAvgPitchVelocity( 'KC', pitchesDataPerAtBat ),
-        avgKNspeed : calculateAvgPitchVelocity( 'KN', pitchesDataPerAtBat ),
-        avgSCspeed : calculateAvgPitchVelocity( 'SC', pitchesDataPerAtBat ),
-        avgSIspeed : calculateAvgPitchVelocity( 'SI', pitchesDataPerAtBat ),
         avgZone : calculateAvgPitchZone( zonesDictionary ),
+        eventX: eventPitch.x,
+        eventY: eventPitch.y,
         eventZone : eventPitch.zone,
         eventPfxX : eventPitch.pfx_x,
         eventPfxZ : eventPitch.pfx_z,
@@ -111,27 +129,10 @@ export const calculateEventDataSet = ( date: DateType,
         eventBreakLength : eventPitch.break_length,
         eventBreakAngle : eventPitch.break_angle,
         eventSpinRate : eventPitch.spin_rate,
-        Lineout : atbat.$.event === 'Lineout' ? 1 : 0,
-        Single : atbat.$.event === 'Single' ? 1 : 0,
-        Double : atbat.$.event === 'Double' ? 1 : 0,
-        Triple : atbat.$.event === 'Triple' ? 1 : 0,
-        Flyout : atbat.$.event === 'Flyout' ? 1 : 0,
-        Single : atbat.$.event === 'Single' ? 1 : 0,
-        HomeRun : atbat.$.event === 'Home Run' ? 1 : 0,
-        Strikeout : atbat.$.event === 'Strikeout' ? 1 : 0,
-        Groundout : atbat.$.event === 'Groundout' ? 1 : 0,
-        GroundedIntoDP : atbat.$.event === 'Grounded Into DP' ? 1 : 0,
-        HitByPitch : atbat.$.event === 'Hit By Pitch' ? 1 : 0,
-        SacFly : atbat.$.event === 'Sac Fly' ? 1 : 0,
-        Walk : atbat.$.event === 'Walk' ? 1 : 0,
-        Forceout : atbat.$.event === 'Forceout' ? 1 : 0,
-        SacBunt : atbat.$.event === 'Sac Bunt' ? 1 : 0,
-        PopOut : atbat.$.event === 'Pop Out' ? 1 : 0,
-        FieldError : atbat.$.event === 'Field Error' ? 1 : 0,
-        RunnerOut : atbat.$.event === 'Runner Out' ? 1 : 0,
-        IntentWalk : atbat.$.event === 'Intent Walk' ? 1 : 0,
-        DoublePlay : atbat.$.event === 'Double Play' ? 1 : 0,
-        FieldersChoiceOut : atbat.$.event === 'Fielders Choice Out' ? 1 : 0
+        Hit: calculateOutput( atbat.$.event ) === 'Hit' ? 1 : 0, 
+        Out: calculateOutput( atbat.$.event ) === 'Out' ? 1 : 0, 
+        Walk: calculateOutput( atbat.$.event ) === 'Walk' ? 1 : 0, 
+        Other: calculateOutput( atbat.$.event ) === 'Other' ? 1 : 0
     }
 
     // pitch zone data set

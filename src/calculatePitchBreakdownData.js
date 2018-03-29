@@ -1,3 +1,5 @@
+import { isEmpty } from './utils'
+
 //libs
 import * as _ from 'lodash'
 const fs = require( 'file-system' );
@@ -9,11 +11,14 @@ let globalPitchData = {};
 const pitchTypes = ['FF','FT','FA','FS','FO','FC','CH','CU','SL','KC','KN','SC','SI'];
 
 const getPitchMetric = ( pitchType: string, name: string, id: string ) => {
+    if (!globalPitchData[id].filter){
+        return 0
+    }
     const data = _.first( globalPitchData[id].filter( data => data.pitch_type == pitchType) )
     if ( !data ) {
         return 0
     }
-    return data[name]
+    return !isEmpty(data[name]) ? data[name] : 0
 }
 
 const getPitchData = ( playerType: string, id: string ) => {
@@ -53,7 +58,7 @@ const jsonSerializeData = ( date, playerId: string, playerType: string ): Array<
     } catch ( err ) {
         json = JSON.stringify([])
     }
-    return JSON.parse( json );
+    return json == 'undefined' ? JSON.stringify([]) : JSON.parse( json )
 }
 
 export const calculatePitchData = ( date: DateType, playerId: string, playerType: string ) => {

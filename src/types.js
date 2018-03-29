@@ -42,3 +42,8 @@ export interface PitchBreakdownData {
   pfx_z: string;
   pitch_type: string;
 }
+
+export interface PlayerItemType {
+  id: string,
+  value: { id: string, playerType: string }
+}

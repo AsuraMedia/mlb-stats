@@ -13,6 +13,9 @@ export class MlbMapReducer {
             .getSchedule(date)
             .catch(err => err)
             .then(( response ) => {
+                if ( !response || !response.data ) {
+                    return []
+                }
                 const gamesArray = response.data.data.games.game
                 if ( !gamesArray || !gamesArray.length ) {
                     return []
