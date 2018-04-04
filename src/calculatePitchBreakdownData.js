@@ -27,20 +27,10 @@ const getPitchData = ( playerType: string, id: string ) => {
     const pType = _.startCase( playerType );
 
     pitchTypes.forEach( ( type ) => {
-        dynamicObject[pType + "PitchBreakdown" + type + "Pitches"] = getPitchMetric( type, 'pitches', id );
-        dynamicObject[pType + "PitchBreakdown" + type + "Pa"] = getPitchMetric( type, 'pa', id );
         dynamicObject[pType + "PitchBreakdown" + type + "Ba"] = getPitchMetric( type, 'ba', id );
-        dynamicObject[pType + "PitchBreakdown" + type + "Slg"] = getPitchMetric( type, 'slg', id );
-        dynamicObject[pType + "PitchBreakdown" + type + "Hits"] = getPitchMetric( type, 'hits', id );
-        dynamicObject[pType + "PitchBreakdown" + type + "Whiffs"] = getPitchMetric( type, 'whiffs', id );
-        dynamicObject[pType + "PitchBreakdown" + type + "So"] = getPitchMetric( type, 'so', id );
+        dynamicObject[pType + "PitchBreakdown" + type + "Pitches"] = getPitchMetric( type, 'pitches', id );
+        dynamicObject[pType + "PitchBreakdown" + type + "LaunchAngle"] = getPitchMetric( type, 'launch_angle', id );
         dynamicObject[pType + "PitchBreakdown" + type + "Exit_velocity"] = getPitchMetric( type, 'exit_velocity', id );
-        dynamicObject[pType + "PitchBreakdown" + type + "Spin_rate"] = getPitchMetric( type, 'spin_rate', id );
-        dynamicObject[pType + "PitchBreakdown" + type + "Release_pos_x"] = getPitchMetric( type, 'release_pos_x', id );
-        dynamicObject[pType + "PitchBreakdown" + type + "Release_pos_y"] = getPitchMetric( type, 'release_pos_y', id );
-        dynamicObject[pType + "PitchBreakdown" + type + "Release_pos_z"] = getPitchMetric( type, 'release_pos_z', id );
-        dynamicObject[pType + "PitchBreakdown" + type + "Pfx_x"] = getPitchMetric( type, 'pfx_x', id );
-        dynamicObject[pType + "PitchBreakdown" + type + "Pfx_z"] = getPitchMetric( type, 'pfx_z', id );
     } )
 
     return dynamicObject;

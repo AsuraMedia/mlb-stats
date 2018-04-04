@@ -117,18 +117,6 @@ export const calculateEventDataSet = ( date: DateType,
         strikes: atbat.$.s,
         outs: atbat.$.o,
         avgZone : calculateAvgPitchZone( zonesDictionary ),
-        eventX: eventPitch.x,
-        eventY: eventPitch.y,
-        eventZone : eventPitch.zone,
-        eventPfxX : eventPitch.pfx_x,
-        eventPfxZ : eventPitch.pfx_z,
-        eventEndSpeed : eventPitch.end_speed,
-        eventAx : eventPitch.ax,
-        eventAy : eventPitch.ay,
-        eventAz : eventPitch.az,
-        eventBreakLength : eventPitch.break_length,
-        eventBreakAngle : eventPitch.break_angle,
-        eventSpinRate : eventPitch.spin_rate,
         Hit: calculateOutput( atbat.$.event ) === 'Hit' ? 1 : 0, 
         Out: calculateOutput( atbat.$.event ) === 'Out' ? 1 : 0, 
         Walk: calculateOutput( atbat.$.event ) === 'Walk' ? 1 : 0, 
@@ -136,8 +124,8 @@ export const calculateEventDataSet = ( date: DateType,
     }
 
     // pitch zone data set
-    const secondSet = calculateZoneData( date, atbat.$.pitcher, 'pitcher' );
-    const thirdSet = calculateZoneData( date, atbat.$.batter, 'batter' );
+    //const secondSet = calculateZoneData( date, atbat.$.pitcher, 'pitcher' );
+    //const thirdSet = calculateZoneData( date, atbat.$.batter, 'batter' );
 
     // pitch breakdown data set
     const fourthSet = calculatePitchData( date, atbat.$.pitcher, 'pitcher' );
@@ -146,8 +134,8 @@ export const calculateEventDataSet = ( date: DateType,
     // combine all data set props
     const finalResultSet = _.assign( new Object(), 
         firstSet, 
-        secondSet, 
-        thirdSet,
+        // secondSet, 
+        // thirdSet,
         fourthSet,
         fifthSet 
     );

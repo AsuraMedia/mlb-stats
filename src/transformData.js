@@ -30,6 +30,9 @@ let csvDataSet: Array<EventRow> = [];
 let eventDataSet: Array<EventRow> = [];
 let playersIds: { batterIds: Array<string>, pitcherIds: Array<string> };
 
+let eventsAfterHr = [];
+const EVENT_COUNTER_LIMIT = 3;
+
 const mapEventPitch = (event:PitchHeader): PitchHeader => {
   return {
     x: event.x,
@@ -78,13 +81,32 @@ export const transformXml = (date: DateType) => {
       for (let topIndex in inning.top) {
         if (inning.$.next === "Y") {
           const topHalf = inning.top[topIndex];
+
+          let wasHomeRun = false;
+          let eventCounter = 0;
+
           for (let atbatIndex in topHalf.atbat) {
 
             let eventPitch = {};
             let zonesDictionary = {};
             const atbat = topHalf.atbat[atbatIndex];
 
-            // Fill players dictionary
+            if ( atbat.$.event === 'Home Run' ) {
+              wasHomeRun = true
+            }
+
+            if ( wasHomeRun ) {
+              eventCounter++
+              if ( eventCounter === EVENT_COUNTER_LIMIT ) {
+                eventsAfterHr.push( atbat )
+              } else if ( eventCounter > EVENT_COUNTER_LIMIT ) {
+                eventCounter = 0
+                wasHomeRun = false
+              }
+            }
+
+
+                // Fill players dictionary
             playersIds = savantService.fillPlayersIds(atbat, date);
 
             if (atbat.pitch && atbat.pitch[0].$.pitch_type) {
@@ -136,10 +158,28 @@ export const transformXml = (date: DateType) => {
       for (let bottomIndex in inning.bottom) {
         if (inning.$.next === "Y") {
           const bottomHalf = inning.bottom[bottomIndex];
+
+          let wasHomeRun = false;
+          let eventCounter = 0;
+          
           for (let atbatIndex in bottomHalf.atbat) {
             let eventPitch: PitchHeader = {};
             let zonesDictionary = {};
             const atbat = bottomHalf.atbat[atbatIndex];
+
+            if ( atbat.$.event === 'Home Run' ) {
+              wasHomeRun = true
+            }
+
+            if ( wasHomeRun ) {
+              eventCounter++
+              if ( eventCounter === EVENT_COUNTER_LIMIT ) {
+                eventsAfterHr.push( atbat )
+              } else if ( eventCounter > EVENT_COUNTER_LIMIT ) {
+                eventCounter = 0
+                wasHomeRun = false
+              }
+            }
 
             // Fill players dictionary
             playersIds = savantService.fillPlayersIds(atbat, date);
@@ -192,8 +232,13 @@ export const transformXml = (date: DateType) => {
     console.log(" EVENT DATA SET ----------> ", eventDataSet.length);
   }
 
-  const fileName = `${date.year}_${date.month}_2.2.json`;
-    fs.writeFile(`./${fileName}`, JSON.stringify(eventDataSet), err => {
+  const fileName = `${date.year}_${date.month}_eventsAfterHr.json`;
+    fs.writeFile(`./${fileName}`, JSON.stringify(eventsAfterHr), err => {
       console.log("Saved file json ---> ", `./${fileName}`);
     });
+
+  // const fileName = `${date.year}_${date.month}_2.2.json`;
+  //   fs.writeFile(`./${fileName}`, JSON.stringify(eventDataSet), err => {
+  //     console.log("Saved file json ---> ", `./${fileName}`);
+  //   });
 };
